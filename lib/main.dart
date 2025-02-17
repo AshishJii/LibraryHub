@@ -80,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             const ListTile(
-              leading: CircleAvatar(backgroundImage: AssetImage('assets/photo.png')),
+              leading: CircleAvatar(backgroundImage: AssetImage('assets/photo.jpg')),
               title: Text(
                 'Ashish Verma',
                 style: TextStyle(fontSize: 15),
