@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'home_screen.dart';
 import 'books_screen.dart';
 import 'members_screen.dart';
 import 'about_screen.dart';
 import 'chatbot_screen.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // load environment variables from .env (root of project)
+  await dotenv.load(fileName: '.env');
   runApp(const MyApp());
 }
 

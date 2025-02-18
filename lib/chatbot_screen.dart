@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class chatbotScreen extends StatefulWidget {
   const chatbotScreen({super.key});
@@ -21,7 +22,12 @@ class _chatbotScreenState extends State<chatbotScreen> {
   }
 
   void _initializeModel() {
-    const apiKey = 'Random-string-here';
+    final apiKey = dotenv.env['API_KEY'] ?? '';
+
+    if (apiKey.isEmpty) {
+      // Warn developer/user if key is missing. The underlying SDK may throw if key is empty.
+      debugPrint('CAPI_KEY is not set in environment. Add it to your .env file.');
+    }
 
     _model = GenerativeModel(
       model: 'gemini-pro',
