@@ -31,7 +31,7 @@ class HomeScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 50),
+                  const SizedBox(height: 20),
                   Hero(
                     tag: 'library_logo',
                     child: Container(
@@ -47,7 +47,7 @@ class HomeScreen extends StatelessWidget {
                           ),
                         ],
                       ),
-                      child: Image.asset('assets/library.png', width: 160, height: 160),
+                      child: Image.asset('assets/library.png', width: 120, height: 120),
                     ),
                   ),
                   const SizedBox(height: 30),
