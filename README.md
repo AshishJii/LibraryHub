@@ -12,9 +12,6 @@ A modern, intuitive Library Management System built with Flutter. This applicati
   <img src="showcase/home.png" alt="Home Screen" width="300" height="580"/>
   <img src="showcase/books.png" alt="Books Screen" width="300" height="580"/>
   <img src="showcase/chatbot.png" alt="AI Chatbot" width="300" height="580"/>
-</p>
-
-<p align="center">
   <img src="showcase/book_detail.png" alt="Book Details" width="300" height="580"/>
   <img src="showcase/members.png" alt="Members Screen" width="300" height="580"/>
   <img src="showcase/member_detail.png" alt="Member Details" width="300" height="580"/>
