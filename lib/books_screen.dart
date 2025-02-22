@@ -38,16 +38,34 @@ class BooksScreen extends StatefulWidget {
 class _BooksScreenState extends State<BooksScreen> {
   final List<Book> _books = [
     Book(
-      title: 'Book 1',
-      author: 'Author 1',
+      title: 'HitchHiker\'s Guide to the Galaxy',
+      author: 'Douglas Adams',
       image: 'https://picsum.photos/150?random=1',
-      description: 'Description of Book 1',
+      description: 'A science fiction comedy series created by Douglas Adams.',
     ),
     Book(
-      title: 'Book 2',
-      author: 'Author 2',
+      title: 'The Martian',
+      author: 'Andy Weir',
       image: 'https://picsum.photos/150?random=2',
-      description: 'Description of Book 2',
+      description: 'A science fiction novel about an astronaut stranded on Mars.',
+    ),
+    Book(
+      title: '1984',
+      author: 'George Orwell',
+      image: 'https://picsum.photos/150?random=3',
+      description: 'A dystopian social science fiction novel and cautionary tale about the dangers of totalitarianism.',
+    ),
+    Book(
+      title: 'To Kill a Mockingbird',
+      author: 'Harper Lee',
+      image: 'https://picsum.photos/150?random=4',
+      description: 'A novel about the serious issues of rape and racial inequality.',
+    ),
+    Book(
+      title: 'Pride and Prejudice',
+      author: 'Jane Austen',
+      image: 'https://picsum.photos/150?random=5',
+      description: 'A romantic novel that charts the emotional development of the protagonist Elizabeth Bennet.',
     ),
   ];
 
@@ -100,26 +118,43 @@ class _BooksScreenState extends State<BooksScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Add a New Book'),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: const Text('Add a New Book', style: TextStyle(fontWeight: FontWeight.bold)),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextField(
                   controller: titleController,
-                  decoration: const InputDecoration(labelText: 'Title'),
+                  decoration: const InputDecoration(
+                    labelText: 'Title',
+                    prefixIcon: Icon(Icons.title),
+                  ),
                 ),
+                const SizedBox(height: 12),
                 TextField(
                   controller: authorController,
-                  decoration: const InputDecoration(labelText: 'Author'),
+                  decoration: const InputDecoration(
+                    labelText: 'Author',
+                    prefixIcon: Icon(Icons.person),
+                  ),
                 ),
+                const SizedBox(height: 12),
                 TextField(
                   controller: imageController,
-                  decoration: const InputDecoration(labelText: 'Cover Image URL'),
+                  decoration: const InputDecoration(
+                    labelText: 'Cover Image URL',
+                    prefixIcon: Icon(Icons.image),
+                  ),
                 ),
+                const SizedBox(height: 12),
                 TextField(
                   controller: descriptionController,
-                  decoration: const InputDecoration(labelText: 'Description'),
+                  decoration: const InputDecoration(
+                    labelText: 'Description',
+                    prefixIcon: Icon(Icons.description),
+                  ),
+                  maxLines: 3,
                 ),
               ],
             ),
@@ -141,9 +176,6 @@ class _BooksScreenState extends State<BooksScreen> {
                 );
                 Navigator.of(context).pop();
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orange,
-              ),
               child: const Text('Add'),
             ),
           ],
@@ -160,102 +192,130 @@ class _BooksScreenState extends State<BooksScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.only(top: 20.0, right: 10, left: 10),
-    child: Scaffold(
+    return Scaffold(
       appBar: AppBar(
         title: const Text('Books'),
         actions: [
-          ElevatedButton.icon(
-            onPressed: _showAddBookDialog,
-            icon: const Icon(Icons.add),
-            label: const Text('Add'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.orangeAccent,
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton.icon(
+              onPressed: _showAddBookDialog,
+              icon: const Icon(Icons.add, size: 20),
+              label: const Text('Add Book'),
             ),
           ),
         ],
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(48.0),
+          preferredSize: const Size.fromHeight(64.0),
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(12.0),
             child: TextField(
               controller: _searchController,
               decoration: InputDecoration(
-                hintText: 'Search books...',
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
+                hintText: 'Search books by title or author...',
+                prefixIcon: Icon(Icons.search, color: Theme.of(context).colorScheme.primary),
                 filled: true,
                 fillColor: Colors.white,
+                contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
               ),
             ),
           ),
         ),
       ),
-      body: ListView.builder(
-        itemCount: _filteredBooks.length,
-        itemBuilder: (context, index) {
-          final book = _filteredBooks[index];
-          return Card(
-            margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-            child: ListTile(
-              leading: Image.network(book.image),
-              title: Text(book.title),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+      body: _filteredBooks.isEmpty
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Author: ${book.author}'),
-                  RatingBar.builder(
-                    initialRating: book.rating,
-                    minRating: 1,
-                    direction: Axis.horizontal,
-                    allowHalfRating: true,
-                    itemCount: 5,
-                    itemSize: 20.0,
-                    itemBuilder: (context, _) => const Icon(
-                      Icons.star,
-                      color: Colors.amber,
-                    ),
-                    onRatingUpdate: (rating) {
-                      setState(() {
-                        book.rating = rating;
-                      });
-                    },
+                  Icon(Icons.search_off, size: 64, color: Colors.grey[400]),
+                  const SizedBox(height: 16),
+                  Text(
+                    'No books found',
+                    style: TextStyle(fontSize: 18, color: Colors.grey[600]),
                   ),
                 ],
               ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  PageRouteBuilder(
-                    pageBuilder: (context, animation, secondaryAnimation) => BookDetailScreen(book: book),
-                    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                      const begin = Offset(1.0, 0.0);
-                      const end = Offset.zero;
-                      const curve = Curves.ease;
-                      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-                      var offsetAnimation = animation.drive(tween);
-                      return SlideTransition(
-                        position: offsetAnimation,
-                        child: child,
+            )
+          : ListView.builder(
+              padding: const EdgeInsets.all(8),
+              itemCount: _filteredBooks.length,
+              itemBuilder: (context, index) {
+                final book = _filteredBooks[index];
+                return Card(
+                  margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.all(12),
+                    leading: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.network(
+                        book.image,
+                        width: 50,
+                        height: 70,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    title: Text(
+                      book.title,
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 4),
+                        Text(
+                          'Author: ${book.author}',
+                          style: TextStyle(color: Colors.grey[700], fontSize: 14),
+                        ),
+                        const SizedBox(height: 8),
+                        RatingBar.builder(
+                          initialRating: book.rating,
+                          minRating: 1,
+                          direction: Axis.horizontal,
+                          allowHalfRating: true,
+                          itemCount: 5,
+                          itemSize: 20.0,
+                          itemBuilder: (context, _) => Icon(
+                            Icons.star,
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                          onRatingUpdate: (rating) {
+                            setState(() {
+                              book.rating = rating;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (context, animation, secondaryAnimation) => BookDetailScreen(book: book),
+                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                            const begin = Offset(1.0, 0.0);
+                            const end = Offset.zero;
+                            const curve = Curves.easeInOut;
+                            var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                            var offsetAnimation = animation.drive(tween);
+                            return SlideTransition(
+                              position: offsetAnimation,
+                              child: child,
+                            );
+                          },
+                        ),
                       );
                     },
+                    trailing: IconButton(
+                      icon: const Icon(Icons.delete_rounded),
+                      color: Colors.red[400],
+                      onPressed: () {
+                        _removeBook(index);
+                      },
+                    ),
                   ),
                 );
               },
-              trailing: IconButton(
-                icon: const Icon(Icons.delete, color: Colors.red),
-                onPressed: () {
-                  _removeBook(index);
-                },
-              ),
             ),
-          );
-        },
-      ),
-    ),
     );
   }
 }

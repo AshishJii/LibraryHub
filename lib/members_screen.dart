@@ -25,17 +25,29 @@ class MembersScreen extends StatefulWidget {
 class _MembersScreenState extends State<MembersScreen> {
   final List<Member> _members = [
     Member(
-      name: 'Member 1',
-      email: 'member1@example.com',
+      name: 'Priya Sharma',
+      email: 'priya.sharma@example.com',
       image: 'https://picsum.photos/150?random=4',
-      description: 'Description of Member 1',
+      description: 'Regular Member',
     ),
     Member(
-      name: 'Member 2',
-      email: 'member2@example.com',
+      name: 'Raj Patel',
+      email: 'raj.patel@example.com',
       image: 'https://picsum.photos/150?random=3',
-      description: 'Description of Member 2',
+      description: 'Premium Member',
     ),
+    Member(
+      name: 'Anita Desai',
+      email: 'anita.desai@example.com',
+      image: 'https://picsum.photos/150?random=5',
+      description: 'Guest Member',
+    ),
+    Member(
+      name: 'Vikram Singh',
+      email: 'vikram.singh@example.com',
+      image: 'https://picsum.photos/150?random=6',
+      description: 'Honorary Member',
+    )
   ];
 
   List<Member> _filteredMembers = [];
@@ -87,26 +99,43 @@ class _MembersScreenState extends State<MembersScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Add a New Member'),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: const Text('Add a New Member', style: TextStyle(fontWeight: FontWeight.bold)),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextField(
                   controller: nameController,
-                  decoration: const InputDecoration(labelText: 'Name'),
+                  decoration: const InputDecoration(
+                    labelText: 'Name',
+                    prefixIcon: Icon(Icons.person),
+                  ),
                 ),
+                const SizedBox(height: 12),
                 TextField(
                   controller: emailController,
-                  decoration: const InputDecoration(labelText: 'Email'),
+                  decoration: const InputDecoration(
+                    labelText: 'Email',
+                    prefixIcon: Icon(Icons.email),
+                  ),
                 ),
+                const SizedBox(height: 12),
                 TextField(
                   controller: imageController,
-                  decoration: const InputDecoration(labelText: 'Profile Image URL'),
+                  decoration: const InputDecoration(
+                    labelText: 'Profile Image URL',
+                    prefixIcon: Icon(Icons.image),
+                  ),
                 ),
+                const SizedBox(height: 12),
                 TextField(
                   controller: descriptionController,
-                  decoration: const InputDecoration(labelText: 'Description'),
+                  decoration: const InputDecoration(
+                    labelText: 'Description',
+                    prefixIcon: Icon(Icons.description),
+                  ),
+                  maxLines: 3,
                 ),
               ],
             ),
@@ -128,9 +157,6 @@ class _MembersScreenState extends State<MembersScreen> {
                 );
                 Navigator.of(context).pop();
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orange,
-              ),
               child: const Text('Add'),
             ),
           ],
@@ -147,80 +173,112 @@ class _MembersScreenState extends State<MembersScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.only(top: 20.0, right: 10, left: 10),
-    child: Scaffold(
+    return Scaffold(
       appBar: AppBar(
         title: const Text('Members'),
         actions: [
-          ElevatedButton.icon(
-            onPressed: _showAddMemberDialog,
-            icon: const Icon(Icons.add),
-            label: const Text('Add'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.orangeAccent,
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton.icon(
+              onPressed: _showAddMemberDialog,
+              icon: const Icon(Icons.add, size: 20),
+              label: const Text('Add Member'),
             ),
           ),
         ],
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(48.0),
+          preferredSize: const Size.fromHeight(64.0),
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(12.0),
             child: TextField(
               controller: _searchController,
               decoration: InputDecoration(
-                hintText: 'Search members...',
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
+                hintText: 'Search members by name or email...',
+                prefixIcon: Icon(Icons.search, color: Theme.of(context).colorScheme.primary),
                 filled: true,
                 fillColor: Colors.white,
+                contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
               ),
             ),
           ),
         ),
       ),
-      body: ListView.builder(
-        itemCount: _filteredMembers.length,
-        itemBuilder: (context, index) {
-          final member = _filteredMembers[index];
-          return Card(
-            margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-            child: ListTile(
-              leading: Image.network(member.image),
-              title: Text(member.name),
-              subtitle: Text(member.email),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  PageRouteBuilder(
-                    pageBuilder: (context, animation, secondaryAnimation) => MemberDetailScreen(member: member),
-                    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                      const begin = Offset(1.0, 0.0);
-                      const end = Offset.zero;
-                      const curve = Curves.ease;
-                      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-                      var offsetAnimation = animation.drive(tween);
-                      return SlideTransition(
-                        position: offsetAnimation,
-                        child: child,
+      body: _filteredMembers.isEmpty
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.search_off, size: 64, color: Colors.grey[400]),
+                  const SizedBox(height: 16),
+                  Text(
+                    'No members found',
+                    style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+                  ),
+                ],
+              ),
+            )
+          : ListView.builder(
+              padding: const EdgeInsets.all(8),
+              itemCount: _filteredMembers.length,
+              itemBuilder: (context, index) {
+                final member = _filteredMembers[index];
+                return Card(
+                  margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.all(12),
+                    leading: CircleAvatar(
+                      radius: 30,
+                      backgroundImage: NetworkImage(member.image),
+                    ),
+                    title: Text(
+                      member.name,
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                    subtitle: Padding(
+                      padding: const EdgeInsets.only(top: 4.0),
+                      child: Row(
+                        children: [
+                          Icon(Icons.email, size: 16, color: Colors.grey[600]),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              member.email,
+                              style: TextStyle(color: Colors.grey[700], fontSize: 14),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (context, animation, secondaryAnimation) => MemberDetailScreen(member: member),
+                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                            const begin = Offset(1.0, 0.0);
+                            const end = Offset.zero;
+                            const curve = Curves.easeInOut;
+                            var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                            var offsetAnimation = animation.drive(tween);
+                            return SlideTransition(
+                              position: offsetAnimation,
+                              child: child,
+                            );
+                          },
+                        ),
                       );
                     },
+                    trailing: IconButton(
+                      icon: const Icon(Icons.delete_rounded),
+                      color: Colors.red[400],
+                      onPressed: () {
+                        _removeMember(index);
+                      },
+                    ),
                   ),
                 );
               },
-              trailing: IconButton(
-                icon: const Icon(Icons.delete, color: Colors.red),
-                onPressed: () {
-                  _removeMember(index);
-                },
-              ),
             ),
-          );
-        },
-      ),
-    ),
     );
   }
 }

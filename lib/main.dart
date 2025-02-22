@@ -21,8 +21,47 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange),
         useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF5E35B1), // Deep Purple
+          primary: const Color(0xFF5E35B1),
+          secondary: const Color(0xFF26A69A), // Teal
+          tertiary: const Color(0xFF7E57C2), // Light Purple
+          surface: Colors.white,
+          background: const Color(0xFFF5F5F5),
+        ),
+        appBarTheme: const AppBarTheme(
+          elevation: 0,
+          centerTitle: true,
+          backgroundColor: Color(0xFF5E35B1),
+          foregroundColor: Colors.white,
+        ),
+        cardTheme: CardThemeData(
+          elevation: 3,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF26A69A),
+            foregroundColor: Colors.white,
+            elevation: 2,
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: Color(0xFF5E35B1), width: 2),
+          ),
+        ),
       ),
       home: const MyHomePage(),
     );
@@ -58,71 +97,88 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Library Management'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            const UserAccountsDrawerHeader(
+            UserAccountsDrawerHeader(
               decoration: BoxDecoration(
-                color: Colors.orange,
+                gradient: LinearGradient(
+                  colors: [
+                    Theme.of(context).colorScheme.primary,
+                    Theme.of(context).colorScheme.tertiary,
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
               ),
-              accountName: Text(
+              accountName: const Text(
                 'National Library',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 20,
                 ),
               ),
-              accountEmail: Text(
+              accountEmail: const Text(
                 'Public Library',
                 style: TextStyle(fontSize: 16),
               ),
-              currentAccountPicture: CircleAvatar(
+              currentAccountPicture: const CircleAvatar(
+                backgroundColor: Colors.white,
                 backgroundImage: AssetImage('assets/library.png'),
               ),
             ),
-            const ListTile(
-              leading: CircleAvatar(backgroundImage: AssetImage('assets/photo.jpg')),
-              title: Text(
+            ListTile(
+              leading: const CircleAvatar(backgroundImage: AssetImage('assets/photo.jpg')),
+              title: const Text(
                 'Ashish Verma',
-                style: TextStyle(fontSize: 15),
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
               ),
               subtitle: Text(
                 'Administrator',
-                style: TextStyle(fontSize: 13),
+                style: TextStyle(fontSize: 13, color: Colors.grey[600]),
               ),
             ),
             const Divider(),
             ListTile(
-              leading: const Icon(Icons.home),
-              trailing: const Icon(Icons.arrow_forward),
+              leading: Icon(Icons.home, color: Theme.of(context).colorScheme.primary),
+              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
               title: const Text('Home'),
+              selected: _selectedIndex == 0,
+              selectedTileColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
               onTap: () => _onItemTapped(0),
             ),
             ListTile(
-              leading: const Icon(Icons.book),
-              trailing: const Icon(Icons.arrow_forward),
+              leading: Icon(Icons.book, color: Theme.of(context).colorScheme.primary),
+              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
               title: const Text('Books'),
+              selected: _selectedIndex == 1,
+              selectedTileColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
               onTap: () => _onItemTapped(1),
             ),
             ListTile(
-              leading: const Icon(Icons.people),
-              trailing: const Icon(Icons.arrow_forward),
+              leading: Icon(Icons.people, color: Theme.of(context).colorScheme.primary),
+              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
               title: const Text('Members'),
+              selected: _selectedIndex == 2,
+              selectedTileColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
               onTap: () => _onItemTapped(2),
             ),
             ListTile(
-              leading: const Icon(Icons.chat),
-              trailing: const Icon(Icons.arrow_forward),
+              leading: Icon(Icons.chat, color: Theme.of(context).colorScheme.secondary),
+              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
               title: const Text('Chat Bot'),
+              selected: _selectedIndex == 3,
+              selectedTileColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
               onTap: () => _onItemTapped(3),
             ),
             ListTile(
-              leading: const Icon(Icons.info),
-              trailing: const Icon(Icons.arrow_forward),
+              leading: Icon(Icons.info, color: Theme.of(context).colorScheme.primary),
+              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
               title: const Text('About'),
+              selected: _selectedIndex == 4,
+              selectedTileColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
               onTap: () => _onItemTapped(4),
             ),
           ],

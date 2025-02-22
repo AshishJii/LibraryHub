@@ -17,111 +17,177 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.book.title),
-        backgroundColor: Colors.orangeAccent,
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Hero(
+              tag: 'book_${widget.book.title}',
+              child: Container(
+                height: 300,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: NetworkImage(widget.book.image),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.transparent,
+                        Colors.black.withOpacity(0.7),
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                  ),
+                ),
+              ),
             ),
-            elevation: 5,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Center(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10.0),
-                      child: Image.network(
-                        widget.book.image,
-                        height: 200,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
                   Text(
                     widget.book.title,
-                    style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    'Author: ${widget.book.author}',
-                    style: const TextStyle(fontSize: 18, fontStyle: FontStyle.italic, color: Colors.grey),
-                  ),
-                  const SizedBox(height: 20),
-                  RatingBar.builder(
-                    initialRating: widget.book.rating,
-                    minRating: 1,
-                    direction: Axis.horizontal,
-                    allowHalfRating: true,
-                    itemCount: 5,
-                    itemSize: 30.0,
-                    itemBuilder: (context, _) => const Icon(
-                      Icons.star,
-                      color: Colors.amber,
+                    style: const TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
                     ),
-                    onRatingUpdate: (rating) {
-                      setState(() {
-                        widget.book.rating = rating;
-                      });
-                    },
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Icon(Icons.person, size: 18, color: Colors.grey[600]),
+                      const SizedBox(width: 4),
+                      Text(
+                        widget.book.author,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontStyle: FontStyle.italic,
+                          color: Colors.grey[700],
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 20),
+                  Row(
+                    children: [
+                      const Text(
+                        'Rating: ',
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                      ),
+                      RatingBar.builder(
+                        initialRating: widget.book.rating,
+                        minRating: 1,
+                        direction: Axis.horizontal,
+                        allowHalfRating: true,
+                        itemCount: 5,
+                        itemSize: 28.0,
+                        itemBuilder: (context, _) => Icon(
+                          Icons.star,
+                          color: Theme.of(context).colorScheme.secondary,
+                        ),
+                        onRatingUpdate: (rating) {
+                          setState(() {
+                            widget.book.rating = rating;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
                   const Divider(),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 16),
                   const Text(
                     'Description',
                     style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 12),
                   Text(
                     widget.book.description,
-                    style: const TextStyle(fontSize: 16, height: 1.5),
+                    style: const TextStyle(fontSize: 16, height: 1.6),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 24),
                   const Divider(),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 16),
                   const Text(
                     'Comments',
                     style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                   ),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: widget.book.comments.length,
-                    itemBuilder: (context, index) {
-                      final comment = widget.book.comments[index];
-                      return ListTile(
-                        title: Text(comment.user),
-                        subtitle: Text(comment.text),
-                        trailing: Icon(
-                          comment.liked ? Icons.thumb_up : Icons.thumb_down,
-                          color: comment.liked ? Colors.green : Colors.red,
+                  const SizedBox(height: 12),
+                  if (widget.book.comments.isEmpty)
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Text(
+                          'No comments yet. Be the first to comment!',
+                          style: TextStyle(color: Colors.grey[600]),
                         ),
-                      );
+                      ),
+                    )
+                  else
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: widget.book.comments.length,
+                      itemBuilder: (context, index) {
+                        final comment = widget.book.comments[index];
+                        return Card(
+                          margin: const EdgeInsets.only(bottom: 8),
+                          child: ListTile(
+                            leading: CircleAvatar(
+                              backgroundColor: Theme.of(context).colorScheme.primary,
+                              child: Text(
+                                comment.user[0].toUpperCase(),
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                            ),
+                            title: Text(
+                              comment.user,
+                              style: const TextStyle(fontWeight: FontWeight.w600),
+                            ),
+                            subtitle: Padding(
+                              padding: const EdgeInsets.only(top: 4.0),
+                              child: Text(comment.text),
+                            ),
+                            trailing: Icon(
+                              comment.liked ? Icons.thumb_up : Icons.thumb_down,
+                              color: comment.liked 
+                                  ? Theme.of(context).colorScheme.secondary
+                                  : Colors.red[400],
+                              size: 20,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  const SizedBox(height: 16),
+                  TextField(
+                    decoration: InputDecoration(
+                      labelText: 'Add a comment',
+                      hintText: 'Share your thoughts about this book...',
+                      prefixIcon: const Icon(Icons.comment),
+                      suffixIcon: Icon(Icons.send, color: Theme.of(context).colorScheme.secondary),
+                    ),
+                    maxLines: 3,
+                    onSubmitted: (text) {
+                      if (text.isNotEmpty) {
+                        setState(() {
+                          widget.book.comments.add(Comment(user: 'Reader', text: text, liked: true));
+                        });
+                      }
                     },
                   ),
                   const SizedBox(height: 20),
-                  TextField(
-                    decoration: const InputDecoration(
-                      labelText: 'Add a comment',
-                      border: OutlineInputBorder(),
-                    ),
-                    onSubmitted: (text) {
-                      setState(() {
-                        widget.book.comments.add(Comment(user: 'Ram', text: text, liked: true));
-                      });
-                    },
-                  ),
                 ],
               ),
             ),
-          ),
+          ],
         ),
       ),
     );

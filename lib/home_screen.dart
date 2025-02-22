@@ -13,11 +13,14 @@ class HomeScreen extends StatelessWidget {
       body: Stack(
         children: [
           Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [Colors.orangeAccent, Colors.orange],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
+                colors: [
+                  Theme.of(context).colorScheme.primary,
+                  Theme.of(context).colorScheme.tertiary,
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
             ),
           ),
@@ -31,12 +34,26 @@ class HomeScreen extends StatelessWidget {
                   const SizedBox(height: 50),
                   Hero(
                     tag: 'library_logo',
-                    child: Image.asset('assets/library.png', width: 200, height: 200),
+                    child: Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 20,
+                            spreadRadius: 5,
+                          ),
+                        ],
+                      ),
+                      child: Image.asset('assets/library.png', width: 160, height: 160),
+                    ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 30),
                   const Text(
                     'Welcome to the Library',
-                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
+                    style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 10),
@@ -45,15 +62,19 @@ class HomeScreen extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 18, color: Colors.white70),
                   ),
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 40),
                   GridView.count(
                     crossAxisCount: 2,
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
+                    mainAxisSpacing: 16,
+                    crossAxisSpacing: 16,
                     children: [
                       _buildFeatureCard(
-                        icon: Icons.book,
+                        context: context,
+                        icon: Icons.menu_book_rounded,
                         title: 'Browse Books',
+                        color: const Color(0xFF00897B),
                         onTap: () {
                           Navigator.push(
                             context,
@@ -62,8 +83,10 @@ class HomeScreen extends StatelessWidget {
                         },
                       ),
                       _buildFeatureCard(
-                        icon: Icons.people,
+                        context: context,
+                        icon: Icons.people_rounded,
                         title: 'Manage Members',
+                        color: const Color(0xFF6A1B9A),
                         onTap: () {
                           Navigator.push(
                             context,
@@ -72,8 +95,10 @@ class HomeScreen extends StatelessWidget {
                         },
                       ),
                       _buildFeatureCard(
-                        icon: Icons.chat,
-                        title: 'Chat Bot Assistance',
+                        context: context,
+                        icon: Icons.chat_bubble_rounded,
+                        title: 'Chat Assistant',
+                        color: const Color(0xFF1976D2),
                         onTap: () {
                           Navigator.push(
                             context,
@@ -82,8 +107,10 @@ class HomeScreen extends StatelessWidget {
                         },
                       ),
                       _buildFeatureCard(
-                        icon: Icons.info,
+                        context: context,
+                        icon: Icons.info_rounded,
                         title: 'About',
+                        color: const Color(0xFF388E3C),
                         onTap: () {
                           Navigator.push(
                             context,
@@ -93,32 +120,34 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 30),
-                  const Text(
-                    'Library Benefits:',
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 10),
-                  const ListTile(
-                    leading: Icon(Icons.wifi, color: Colors.white),
-                    title: Text(
-                      'Access to a wide variety of resources',
-                      style: TextStyle(fontSize: 16, color: Colors.white),
+                  const SizedBox(height: 40),
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(16),
                     ),
-                  ),
-                  const ListTile(
-                    leading: Icon(Icons.group_work, color: Colors.white),
-                    title: Text(
-                      'Collaborative work spaces',
-                      style: TextStyle(fontSize: 16, color: Colors.white),
-                    ),
-                  ),
-                  const ListTile(
-                    leading: Icon(Icons.event, color: Colors.white),
-                    title: Text(
-                      'Educational programs and community events',
-                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    child: Column(
+                      children: [
+                        const Text(
+                          'Library Benefits',
+                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 20),
+                        _buildBenefitTile(
+                          icon: Icons.library_books_rounded,
+                          text: 'Access to a wide variety of resources',
+                        ),
+                        _buildBenefitTile(
+                          icon: Icons.groups_rounded,
+                          text: 'Collaborative work spaces',
+                        ),
+                        _buildBenefitTile(
+                          icon: Icons.event_rounded,
+                          text: 'Educational programs and community events',
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(height: 50),
@@ -131,26 +160,64 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFeatureCard({required IconData icon, required String title, required VoidCallback onTap}) {
-    return Card(
-      margin: const EdgeInsets.all(10),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
+  Widget _buildBenefitTile({required IconData icon, required String text}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        children: [
+          Icon(icon, color: Colors.white, size: 28),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(fontSize: 16, color: Colors.white),
+            ),
+          ),
+        ],
       ),
-      elevation: 5,
+    );
+  }
+
+  Widget _buildFeatureCard({
+    required BuildContext context,
+    required IconData icon,
+    required String title,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return Card(
+      elevation: 8,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20.0),
+      ),
       child: InkWell(
         onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
+        borderRadius: BorderRadius.circular(20.0),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20.0),
+            gradient: LinearGradient(
+              colors: [color, color.withOpacity(0.85)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, size: 50, color: Colors.deepOrangeAccent),
-              const SizedBox(height: 10),
-              Text(
-                title,
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
+              Icon(icon, size: 56, color: Colors.white),
+              const SizedBox(height: 12),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
               ),
             ],
           ),
